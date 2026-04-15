@@ -1,0 +1,48 @@
+Projet 2 Naina :
+Infos sur le net (a rechercher) site du ministere
+
+Demande de VISA 
+Type de VISA :
+  -transformable 
+  -non transformable 
+  
+- Etranger arrive a l'aeroport et achete visa transformable
+- Transforme ce visa en un autre type (etudiant , travailleur , ...)
+
+But final : Carte resident + visa
+
+Contraintes : 
+- Visa transformable doit etre enregistre a l'Etat (a partir du passeport) => PAS DE BD POUR LE PROJET =>  saisir les infos (nouvelle demande)
+
+
+SPRINT 1 : SAISIE NOUVELLE DEMANDE 
+- Enregistrement nouvelle demande visa transformable (Ministere de l'interieur avec les dossiers selon type => fiche de renseignement : etat civil , visa transformable, type visa a demander , autres infos specifiques ,... )
+2 types : etudiant , travailleur
+
+Categorie demande : (infos differentes par categorie pour la saisie)
+  - Duplicata (carte resident)
+  - Transfert de visa
+  - Nouveau Titre 
+  - Renouvellement
+  - Sans donnees anterieures
+  
+Formulaire de demande : 
+  - Fiche Etat civil : nom , prenom , nom de jeune fille , situation maritale (de famille) , nationalite , adresse (madagascar) , contact (mail + tel) , profession, passeport (numero , date de delivrance , date expiration)  
+  
+  - Visa transformable : date entree Mcar , ref visa , lieu entree Mcar , date expiration 
+  
+  - Type de la demande 
+  
+  - Statut Visa : travailleur / investisseur
+
+Pieces justificatives : case a cocher 
+
+  
+ 
+
+
+
+
+
+
+
