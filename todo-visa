@@ -37,6 +37,25 @@ Formulaire de demande :
 
 Pieces justificatives : case a cocher 
 
+modif info possible : tsy mampanova statut
+
+statut : dossier creer (tout obli cocher/tafiditra anaty base)
+
+SPRINT 2 
+donnees anterieures => na tsisy oe dossier creer de tode approuver
+
+demande duplicata
+carte resident ilaina
+
+SPRINT 3 
+scan des pieces zustificatives => upload fichier pdf 
+si tout terminer => statut : scan terminer => statut ne peut plus etre modifier
+
+statut => visa approuve (misy titre de sejour, carte resident et visa)
+
+
+id_passport relier carte resident
+
   
  
 
