@@ -17,7 +17,7 @@ Contraintes :
 
 SPRINT 1 : SAISIE NOUVELLE DEMANDE 
 - Enregistrement nouvelle demande visa transformable (Ministere de l'interieur avec les dossiers selon type => fiche de renseignement : etat civil , visa transformable, type visa a demander , autres infos specifiques ,... )
-2 types : etudiant , travailleur
+2 types : etudiant , travailleur, investisseur
 
 Categorie demande : (infos differentes par categorie pour la saisie)
   - Duplicata (carte resident)
