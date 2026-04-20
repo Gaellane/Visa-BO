@@ -70,28 +70,16 @@ CREATE TABLE passeport(
    FOREIGN KEY(id_demandeur) REFERENCES demandeur(id)
 );
 
-CREATE TABLE visa_transformable(
-   id SERIAL,
-   date_entree DATE,
-   lieu VARCHAR(50),
-   expiration VARCHAR(50),
-   id_passeport INTEGER NOT NULL,
-   PRIMARY KEY(id),
-   FOREIGN KEY(id_passeport) REFERENCES passeport(id)
-);
-
 CREATE TABLE demande(
    id SERIAL,
    date_demande DATE NOT NULL,
-   id_transformable INTEGER NOT NULL,
+   id_demandeur INTEGER NOT NULL,
    id_type INTEGER,
    id_type_visa INTEGER,
-   id_status INTEGER NOT NULL,
    PRIMARY KEY(id),
-   FOREIGN KEY(id_transformable) REFERENCES visa_transformable(id),
+   FOREIGN KEY(id_demandeur) REFERENCES demandeur(id),
    FOREIGN KEY(id_type) REFERENCES demande_type(id),
-   FOREIGN KEY(id_type_visa) REFERENCES visa_type(id),
-   FOREIGN KEY(id_status) REFERENCES demande_status(id)
+   FOREIGN KEY(id_type_visa) REFERENCES visa_type(id)
 );
 
 CREATE TABLE demande_history(
@@ -114,14 +102,26 @@ CREATE TABLE demande_piece(
    FOREIGN KEY(id_piece) REFERENCES piece_justificative(id)
 );
 
+CREATE TABLE visa_transformable(
+   id SERIAL,
+   date_entree DATE,
+   lieu VARCHAR(50),
+   expiration VARCHAR(50),
+   id_passeport INTEGER NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(id_passeport) REFERENCES passeport(id)
+);
+
 CREATE TABLE carte_resident(
    id SERIAL,
    reference VARCHAR(50),
    date_entree DATE NOT NULL,
    date_expiration DATE,
    lieu_entree VARCHAR(50),
+   id_resident INTEGER NOT NULL,
    id_demande INTEGER NOT NULL,
    PRIMARY KEY(id),
+   FOREIGN KEY(id_resident) REFERENCES demandeur(id),
    FOREIGN KEY(id_demande) REFERENCES demande(id)
 );
 
