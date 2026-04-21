@@ -1,0 +1,1 @@
+ALTER TABLE piece_justificative ADD COLUMN obligatoire BOOLEAN NOT NULL DEFAULT TRUE;
