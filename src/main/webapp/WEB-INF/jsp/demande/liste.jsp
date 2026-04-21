@@ -17,7 +17,28 @@
 </head>
 <body>
     <h1>Liste des demandes</h1>
+    <form method="get" action="${pageContext.request.contextPath}/demande/liste" style="margin-bottom:16px;"> 
+        <label>Date min:</label> <input type="date" name="dateMin" value="${dateMin}" />
+        <label>Date max:</label> <input type="date" name="dateMax" value="${dateMax}" />
 
+        <label>Type:</label> 
+        <select name="typeId">
+            <option value="">Tous</option>
+            <c:forEach items="${demandeTypes}" var="type">
+                <option value="${type.id}" ${type.id == typeId ? 'selected' : ''}>${type.valeur}</option>
+            </c:forEach>
+        </select>
+
+        <label>Type de visa:</label>
+        <select name="visaTypeId">
+            <option value="">Tous</option>
+            <c:forEach items="${visaTypes}" var="visaType">
+                <option value="${visaType.id}" ${visaType.id == visaTypeId ? 'selected' : ''}>${visaType.valeur}</option>
+            </c:forEach>
+        </select>
+        
+        <input type="submit" value="Rechercher" />
+    </form>
     <table>
         <thead>
             <tr>
