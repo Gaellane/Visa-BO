@@ -32,5 +32,6 @@ public class PieceJustificative {
     @JoinColumn(name = "id_type_visa")
     private VisaType typeVisa;
 
+    @Column(name = "obligatoire", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean obligatoire= true;
 }

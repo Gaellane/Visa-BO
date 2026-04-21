@@ -33,7 +33,7 @@ public class VisaTransformable {
     private String lieu;
 
     @Column(name = "expiration")
-    private String expiration;
+    private LocalDate expiration;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_passeport", nullable = false)
