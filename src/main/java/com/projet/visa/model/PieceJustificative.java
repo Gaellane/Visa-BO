@@ -31,4 +31,6 @@ public class PieceJustificative {
     @ManyToOne
     @JoinColumn(name = "id_type_visa")
     private VisaType typeVisa;
+
+    private Boolean obligatoire= true;
 }
