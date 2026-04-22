@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -20,6 +21,7 @@ import com.projet.visa.service.DemandeService;
 import com.projet.visa.service.DemandeurService;
 
 @Controller
+@RequestMapping("/demandes")
 public class DemandeController {
 
     private final DemandeService demandeService;
@@ -30,7 +32,7 @@ public class DemandeController {
         this.demandeurService = demandeurService;
     }
 
-    @GetMapping("/demandes/new")
+    @GetMapping("/new")
     public String createForm(@RequestParam Integer demandeurId, Model model) {
         model.addAttribute("demandeur", demandeurService.findById(demandeurId));
         model.addAttribute("visaTypes", demandeService.findAllVisaTypes());
@@ -38,7 +40,7 @@ public class DemandeController {
         return "demande/form";
     }
 
-    @PostMapping("/demandes")
+    @PostMapping("")
     public String create(
             @RequestParam Integer demandeurId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDemande,
