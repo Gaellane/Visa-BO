@@ -36,7 +36,7 @@
                 <option value="${visaType.id}" ${visaType.id == visaTypeId ? 'selected' : ''}>${visaType.valeur}</option>
             </c:forEach>
         </select>
-        
+
         <input type="submit" value="Rechercher" />
     </form>
     <table>
@@ -46,6 +46,7 @@
                 <th>demandeur</th>
                 <th>type</th>
                 <th>typeVisa</th>
+                <th>action</th>
             </tr>
         </thead>
         <tbody>
@@ -75,6 +76,9 @@
                             </c:when>
                             <c:otherwise>-</c:otherwise>
                         </c:choose>
+                    </td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/demande/details/${demande.id}">Voir</a>
                     </td>
                 </tr>
             </c:forEach>
