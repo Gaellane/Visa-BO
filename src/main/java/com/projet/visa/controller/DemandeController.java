@@ -21,10 +21,16 @@ import com.projet.visa.service.PasseportService;
 import com.projet.visa.service.VisaTypeService;
 
 
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.projet.visa.service.DemandeurService;
+
 @Controller
-@RequestMapping("/demande")
+@RequestMapping("/demandes")
 public class DemandeController {
 
+    private final DemandeurService demandeurService;
     private final DemandeService demandeService;
     private final DemandeTypeService demandeTypeService;
     private final VisaTypeService visaTypeService;
@@ -32,16 +38,45 @@ public class DemandeController {
     private final PasseportService passeportService;
 
     public DemandeController(
+            DemandeurService demandeurService,
             DemandeService demandeService,
             DemandeTypeService demandeTypeService,
             VisaTypeService visaTypeService,
             DemandePieceService demandePieceService,
             PasseportService passeportService) {
+        this.demandeurService = demandeurService;
         this.demandeService = demandeService;
         this.demandeTypeService = demandeTypeService;
         this.visaTypeService = visaTypeService;
         this.demandePieceService = demandePieceService;
         this.passeportService = passeportService;
+    }
+
+    @GetMapping("/new")
+    public String createForm(@RequestParam Integer demandeurId, Model model) {
+        model.addAttribute("demandeur", demandeurService.findById(demandeurId));
+        model.addAttribute("visaTypes", demandeService.findAllVisaTypes());
+        model.addAttribute("demandeTypes", demandeService.findAllDemandeTypes());
+        return "demande/form";
+    }
+
+    @PostMapping("")
+    public String create(
+            @RequestParam Integer demandeurId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDemande,
+            @RequestParam Integer visaTypeId,
+            @RequestParam Integer demandeTypeId,
+            @RequestParam(required = false, name = "selectedPieces") List<Integer> selectedPieces,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            demandeService.create(dateDemande, demandeurId, visaTypeId, demandeTypeId, selectedPieces);
+            redirectAttributes.addFlashAttribute("success", "Demande enregistree avec succes");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "demande/form";
+        }
+        return "redirect:/demandeurs/" + demandeurId;
     }
 
     @GetMapping("/liste")
@@ -85,5 +120,4 @@ public class DemandeController {
 
         return "demande/fiche";
     }
-
 }
