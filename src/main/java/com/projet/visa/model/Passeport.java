@@ -27,7 +27,7 @@ public class Passeport {
     private Integer id;
 
     @Column(name = "numero")
-    private Integer numero;
+    private String numero;
 
     @Column(name = "delivrance")
     private LocalDate delivrance;
