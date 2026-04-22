@@ -35,6 +35,9 @@ public class VisaTransformable {
     @Column(name = "expiration")
     private LocalDate expiration;
 
+    @Column(name="reference" , nullable = false)
+    private String reference;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_passeport", nullable = false)
     private Passeport passeport;

@@ -1,0 +1,7 @@
+<aside class="sidebar">
+    <div class="sidebar-title">Backoffice Visa</div>
+    <a href="${pageContext.request.contextPath}/">Accueil</a>
+    <a href="${pageContext.request.contextPath}/demandeurs">Demandeurs</a>
+    <a href="${pageContext.request.contextPath}/demandes">Demandes</a>
+    <a href="${pageContext.request.contextPath}/visas">Visas</a>
+</aside>
