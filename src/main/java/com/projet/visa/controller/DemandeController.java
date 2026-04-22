@@ -13,8 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.projet.visa.model.Demande;
 import com.projet.visa.model.Visa;
 import com.projet.visa.model.VisaType;
+import com.projet.visa.model.DemandePiece;
+import com.projet.visa.model.Passeport;
+
 import com.projet.visa.repository.DemandeRepository;
 import com.projet.visa.repository.DemandeTypeRepository;
+import com.projet.visa.repository.DemandePieceRepository;
+import com.projet.visa.repository.PasseportRepository;
 import com.projet.visa.repository.VisaTypeRepository;
 
 
@@ -25,11 +30,15 @@ public class DemandeController {
     private final DemandeRepository demandeRepository;
     private final DemandeTypeRepository demandeTypeRepository;
     private final VisaTypeRepository visaTypeRepository;
+    private final DemandePieceRepository demandePieceRepository;
+    private final PasseportRepository passeportRepository;
 
-    public DemandeController(DemandeRepository demandeRepository, DemandeTypeRepository demandeTypeRepository, VisaTypeRepository visaTypeRepository) {
+    public DemandeController(DemandeRepository demandeRepository, DemandeTypeRepository demandeTypeRepository, VisaTypeRepository visaTypeRepository, DemandePieceRepository demandePieceRepository, PasseportRepository passeportRepository ) {
         this.demandeRepository = demandeRepository;
         this.demandeTypeRepository = demandeTypeRepository;
         this.visaTypeRepository = visaTypeRepository;
+        this.demandePieceRepository = demandePieceRepository;
+        this.passeportRepository = passeportRepository;
     }
 
     @GetMapping("/liste")
@@ -55,6 +64,23 @@ public class DemandeController {
 
 
         return "demande/liste";
+    }
+
+    @GetMapping("/fiche")
+    public String getDetailsDemande(@RequestParam Integer id, Model model){
+        Demande demande = demandeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Demande non trouvée avec l'id: " + id));
+        model.addAttribute("demande", demande);
+
+        Passeport passeport = null;
+        if (demande.getDemandeur() != null) {
+            passeport = passeportRepository.findByDemandeurId(demande.getDemandeur().getId()).orElse(null);
+        }
+        model.addAttribute("passeport", passeport);
+
+        List<DemandePiece> pieces = demandePieceRepository.findByDemandeId(id);
+        model.addAttribute("pieces", pieces);
+
+        return "demande/fiche";
     }
 
 }
