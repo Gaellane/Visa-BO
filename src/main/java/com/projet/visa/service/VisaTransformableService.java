@@ -20,6 +20,7 @@ public class VisaTransformableService {
 
     public VisaTransformable create(
         LocalDate dateEntree,
+        String reference,
         String lieu,
         LocalDate expiration,
         Integer passeportId) throws Exception {
@@ -29,6 +30,7 @@ public class VisaTransformableService {
 
         VisaTransformable visaTransformable = new VisaTransformable();
         visaTransformable.setDateEntree(dateEntree);
+        visaTransformable.setReference(reference);
         visaTransformable.setLieu(lieu);
         visaTransformable.setExpiration(expiration);
         visaTransformable.setPasseport(passeport);
