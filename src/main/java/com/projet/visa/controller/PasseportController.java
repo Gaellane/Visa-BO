@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -14,6 +15,7 @@ import com.projet.visa.service.DemandeurService;
 import com.projet.visa.service.PasseportService;
 
 @Controller
+@RequestMapping("/passeports")
 public class PasseportController {
 
     private final PasseportService passeportService;
@@ -24,13 +26,13 @@ public class PasseportController {
         this.demandeurService = demandeurService;
     }
 
-    @GetMapping("/passeports/new")
+    @GetMapping("/new")
     public String createForm(@RequestParam Integer demandeurId, Model model) {
         model.addAttribute("demandeur", demandeurService.findById(demandeurId));
         return "passeport/form";
     }
 
-    @PostMapping("/passeports")
+    @PostMapping("")
     public String create(
             @RequestParam Integer demandeurId,
             @RequestParam String numero,

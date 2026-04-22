@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -15,6 +16,7 @@ import com.projet.visa.service.PasseportService;
 import com.projet.visa.service.VisaTransformableService;
 
 @Controller
+@RequestMapping("/visa_transformables")
 public class VisaTransformableController {
 
     private final VisaTransformableService visaTransformableService;
@@ -25,7 +27,7 @@ public class VisaTransformableController {
         this.passeportService = passeportService;
     }
 
-    @GetMapping("/visa_transformables/new")
+    @GetMapping("/new")
     public String createForm(@RequestParam Integer passeportId, Model model) {
         Passeport passeport = passeportService.findById(passeportId);
         model.addAttribute("passeport", passeport);
@@ -33,7 +35,7 @@ public class VisaTransformableController {
         return "visa_transformable/form";
     }
 
-    @PostMapping("/visa_transformables")
+    @PostMapping("")
     public String create(
             @RequestParam Integer passeportId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEntree,
