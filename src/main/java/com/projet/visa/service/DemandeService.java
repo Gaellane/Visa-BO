@@ -1,11 +1,16 @@
 package com.projet.visa.service;
 
-import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.projet.visa.model.Demande;
+import com.projet.visa.repository.DemandeRepository;
+
+import java.time.LocalDateTime;
+
 import com.projet.visa.model.DemandeHistory;
 import com.projet.visa.model.DemandePiece;
 import com.projet.visa.model.DemandeStatus;
@@ -15,16 +20,13 @@ import com.projet.visa.model.PieceJustificative;
 import com.projet.visa.model.VisaType;
 import com.projet.visa.repository.DemandeHistoryRepository;
 import com.projet.visa.repository.DemandePieceRepository;
-import com.projet.visa.repository.DemandeRepository;
 import com.projet.visa.repository.DemandeStatusRepository;
 import com.projet.visa.repository.DemandeTypeRepository;
 import com.projet.visa.repository.DemandeurRepository;
 import com.projet.visa.repository.PieceJustificativeRepository;
 import com.projet.visa.repository.VisaTypeRepository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -155,5 +157,14 @@ public class DemandeService {
 
     public List<PieceJustificative> findCommonPieces() {
         return pieceJustificativeRepository.findByTypeVisaIsNull();
+    }
+
+    public List<Demande> search(LocalDate dateMin, LocalDate dateMax, Integer typeId, Integer visaTypeId) {
+        return demandeRepository.search(dateMin, dateMax, typeId, visaTypeId);
+    }
+
+    public Demande getById(Integer id) {
+        return demandeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Demande non trouvée avec l'id: " + id));
     }
 }

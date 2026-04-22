@@ -1,14 +1,16 @@
 package com.projet.visa.service;
 
+import org.springframework.stereotype.Service;
+
+import com.projet.visa.model.Passeport;
+import com.projet.visa.repository.PasseportRepository;
+
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
 
 import com.projet.visa.model.Demandeur;
-import com.projet.visa.model.Passeport;
 import com.projet.visa.repository.DemandeurRepository;
-import com.projet.visa.repository.PasseportRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,4 +50,8 @@ public class PasseportService {
 	public List<Passeport> findByDemandeur(Integer demandeurId) {
 		return passeportRepository.findByDemandeur_Id(demandeurId);
 	}
+
+    public Passeport findByDemandeurId(Integer demandeurId) {
+        return passeportRepository.findByDemandeurId(demandeurId).orElse(null);
+    }
 }

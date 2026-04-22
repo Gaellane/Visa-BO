@@ -40,4 +40,9 @@ public class Demande {
     @ManyToOne
     @JoinColumn(name = "id_type_visa")
     private VisaType typeVisa;
+
+    public Demande orElseThrow(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
 }
