@@ -2,18 +2,21 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layout" %>
 
-<layout:page title="Ajouter demande">
+<c:set var="editMode" value="${not empty demande and not empty demande.id}" />
+<c:set var="formAction" value="${editMode ? pageContext.request.contextPath.concat('/demandes/').concat(demande.id).concat('/edit') : pageContext.request.contextPath.concat('/demandes')}" />
+
+<layout:page title="${editMode ? 'Modifier demande' : 'Ajouter demande'}">
     <div class="card" style="max-width: 900px;">
-        <h1>Ajouter demande</h1>
+        <h1>${editMode ? 'Modifier demande' : 'Ajouter demande'}</h1>
         <p class="sub">Demandeur: ${demandeur.nom} ${demandeur.prenom}</p>
 
-        <form method="post" action="${pageContext.request.contextPath}/demandes">
+        <form method="post" action="${formAction}">
             <input type="hidden" name="demandeurId" value="${demandeur.id}">
 
             <div class="grid">
                 <div class="field">
                     <label for="dateDemande">Date demande</label>
-                    <input id="dateDemande" name="dateDemande" type="date" required>
+                    <input id="dateDemande" name="dateDemande" type="date" value="${demande.dateDemande}" required>
                 </div>
 
                 <div class="field">
@@ -21,7 +24,7 @@
                     <select id="visaTypeId" name="visaTypeId" required>
                         <option value="">Choisir</option>
                         <c:forEach items="${visaTypes}" var="visaType">
-                            <option value="${visaType.id}">${visaType.valeur}</option>
+                            <option value="${visaType.id}" <c:if test="${not empty demande.typeVisa and demande.typeVisa.id == visaType.id}">selected="selected"</c:if>>${visaType.valeur}</option>
                         </c:forEach>
                     </select>
                 </div>
@@ -31,7 +34,7 @@
                     <select id="demandeTypeId" name="demandeTypeId" required>
                         <option value="">Choisir</option>
                         <c:forEach items="${demandeTypes}" var="demandeType">
-                            <option value="${demandeType.id}">${demandeType.valeur}</option>
+                            <option value="${demandeType.id}" <c:if test="${not empty demande.type and demande.type.id == demandeType.id}">selected="selected"</c:if>>${demandeType.valeur}</option>
                         </c:forEach>
                     </select>
                 </div>
@@ -63,6 +66,9 @@
         const commonPiecesContainer = document.getElementById('common-pieces');
         const typedPiecesTitle = document.getElementById('typed-pieces-title');
         const typedPiecesContainer = document.getElementById('typed-pieces');
+        const selectedPieceIds = new Set([
+            <c:forEach items="${selectedPiecesIds}" var="pieceId" varStatus="status">${pieceId}<c:if test="${!status.last}">,</c:if></c:forEach>
+        ]);
 
         function renderPieceList(pieces) {
             return pieces.map((piece) => {
@@ -71,8 +77,9 @@
                     .replaceAll('<', '&lt;')
                     .replaceAll('>', '&gt;')
                     .replaceAll('"', '&quot;');
+                const checked = selectedPieceIds.has(piece.id) ? ' checked' : '';
                 return '<label class="piece-line">'
-                    + '<input type="checkbox" name="selectedPieces" value="' + piece.id + '">'
+                    + '<input type="checkbox" name="selectedPieces" value="' + piece.id + '"' + checked + '>'
                     + '<span>' + safeNom + '</span>'
                     + '</label>';
             }).join('');
@@ -131,6 +138,11 @@
 
         visaTypeSelect.addEventListener('change', loadTypedPieces);
         demandeTypeSelect.addEventListener('change', loadTypedPieces);
-        resetPieces('Choisissez un type de visa et un type de demande pour charger les pieces.');
+
+        if (visaTypeSelect.value && demandeTypeSelect.value) {
+            loadTypedPieces();
+        } else {
+            resetPieces('Choisissez un type de visa et un type de demande pour charger les pieces.');
+        }
     </script>
 </layout:page>

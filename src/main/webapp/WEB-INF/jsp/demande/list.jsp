@@ -100,6 +100,7 @@
                                 </td>
                                 <td>
                                     <a class="btn-action" href="${pageContext.request.contextPath}/demandes/details?id=${demande.id}">Voir</a>
+                                    <a class="btn-action" href="${pageContext.request.contextPath}/demandes/${demande.id}/edit">Modifier</a>
                                 </td>
                             </tr>
                         </c:forEach>

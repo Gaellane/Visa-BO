@@ -106,5 +106,10 @@
                 <p style="margin-top: 8px; color: #6b7280;">Aucune piece justificative enregistree pour cette demande.</p>
             </c:otherwise>
         </c:choose>
+
+        <div class="actions">
+            <a class="btn btn-primary" href="${pageContext.request.contextPath}/demandes/${demande.id}/edit">Modifier demande</a>
+            <a class="btn btn-back" href="${pageContext.request.contextPath}/demandes">Retour liste demandes</a>
+        </div>
     </div>
 </layout:page>

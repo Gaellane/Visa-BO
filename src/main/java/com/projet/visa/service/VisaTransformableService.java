@@ -25,10 +25,50 @@ public class VisaTransformableService {
         LocalDate expiration,
         Integer passeportId) throws Exception {
 
+        return saveVisaTransformable(null, dateEntree, reference, lieu, expiration, passeportId);
+    }
+
+    public VisaTransformable update(
+        Integer id,
+        LocalDate dateEntree,
+        String reference,
+        String lieu,
+        LocalDate expiration) throws Exception {
+
+        VisaTransformable existing = visaTransformableRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Visa transformable introuvable: " + id));
+
+        return saveVisaTransformable(id, dateEntree, reference, lieu, expiration, existing.getPasseport().getId());
+    }
+
+    private VisaTransformable saveVisaTransformable(
+        Integer id,
+        LocalDate dateEntree,
+        String reference,
+        String lieu,
+        LocalDate expiration,
+        Integer passeportId) throws Exception {
+
+        if(dateEntree == null)
+            throw new IllegalArgumentException("La date d'entree est obligatoire");
+        if(reference == null || reference.isEmpty())
+            throw new IllegalArgumentException("La reference est obligatoire");
+        if(lieu == null || lieu.isEmpty())
+            throw new IllegalArgumentException("Le lieu est obligatoire");
+        if(expiration == null)
+            throw new IllegalArgumentException("La date d'expiration est obligatoire");
+
         Passeport passeport = passeportRepository.findById(passeportId)
             .orElseThrow(() -> new IllegalArgumentException("Passeport introuvable: " + passeportId));
 
-        VisaTransformable visaTransformable = new VisaTransformable();
+        VisaTransformable visaTransformable;
+        if (id == null) {
+            visaTransformable = new VisaTransformable();
+        } else {
+            visaTransformable = visaTransformableRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Visa transformable introuvable: " + id));
+        }
+
         visaTransformable.setDateEntree(dateEntree);
         visaTransformable.setReference(reference);
         visaTransformable.setLieu(lieu);
