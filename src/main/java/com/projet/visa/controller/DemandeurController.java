@@ -51,7 +51,7 @@ public class DemandeurController {
         return "demandeur/form";
     }
 
-    @PostMapping("/")
+    @PostMapping({"", "/"})
     public String create(
             @RequestParam String nom,
             @RequestParam(required = false) String prenom,

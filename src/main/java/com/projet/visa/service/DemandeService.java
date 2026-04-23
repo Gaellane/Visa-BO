@@ -104,10 +104,6 @@ public class DemandeService {
         demande.setType(demandeType);
         demande.setTypeVisa(visaType);
 
-
-        for(Entry<Integer,Boolean> pj : pieces_justificatives.entrySet()) {
-            System.out.println("\n\n PJ "+pj.getKey()+" - "+pj.getValue());
-        }
         
         Map<PieceJustificative,Boolean> pieces = pieces_justificatives.entrySet().stream()
             .collect(Collectors.toMap(
@@ -115,20 +111,30 @@ public class DemandeService {
                 entry -> entry.getValue()
             ));
 
-        boolean checkPieces = pieces.values().stream()
-                                    .allMatch(valeur -> valeur != false);
+        boolean checkPieces = pieces.entrySet().stream()
+            .allMatch(entry -> {
+                PieceJustificative piece = entry.getKey();
+                boolean estPresente = entry.getValue();
+                if (piece.getObligatoire()) {
+                    return estPresente;
+                }
+                return true; 
+            });
 
         if(!checkPieces) {
             throw new Exception("Piece obligatoire manquante");
         }
 
+        System.out.println("\n\n CHECK PIECES : "+checkPieces);
         demandeRepository.save(demande);
 
         for (Entry<PieceJustificative , Boolean> piece : pieces.entrySet()) {
-            DemandePiece dp=new DemandePiece();
-            dp.setPiece(piece.getKey());
-            dp.setDemande(demande);
-            demandePieceRepository.save(dp);
+            if(piece.getValue()) {
+                DemandePiece dp=new DemandePiece();
+                dp.setPiece(piece.getKey());
+                dp.setDemande(demande);
+                demandePieceRepository.save(dp);
+            }
         }
 
         DemandeStatus status = demandeStatusRepository.findById(STATUS_CREATE_ID).orElseThrow(()-> new IllegalArgumentException("Status introuvable " +STATUS_CREATE_ID));

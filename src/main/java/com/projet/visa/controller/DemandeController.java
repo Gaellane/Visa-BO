@@ -60,7 +60,7 @@ public class DemandeController {
         return "demande/form";
     }
 
-    @PostMapping("")
+    @PostMapping
     public String create(
             @RequestParam Integer demandeurId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDemande,
@@ -74,12 +74,12 @@ public class DemandeController {
             redirectAttributes.addFlashAttribute("success", "Demande enregistree avec succes");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "demande/form";
+            return "redirect:/demandes/new?demandeurId=" + demandeurId;
         }
         return "redirect:/demandeurs/" + demandeurId;
     }
 
-    @GetMapping("/liste")
+    @GetMapping
     public String getListeDemande(
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateMin,
@@ -101,10 +101,10 @@ public class DemandeController {
         model.addAttribute("visaTypeId", visaTypeId);
 
 
-        return "demande/liste";
+        return "demande/list";
     }
 
-    @GetMapping("/fiche")
+    @GetMapping("/details")
     public String getDetailsDemande(@RequestParam Integer id, Model model){
         Demande demande = demandeService.getById(id);
         model.addAttribute("demande", demande);
@@ -118,6 +118,6 @@ public class DemandeController {
         List<DemandePiece> pieces = demandePieceService.findByDemandeId(id);
         model.addAttribute("pieces", pieces);
 
-        return "demande/fiche";
+        return "demande/detail";
     }
 }
