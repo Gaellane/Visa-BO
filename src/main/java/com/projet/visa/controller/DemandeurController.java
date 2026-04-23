@@ -51,7 +51,7 @@ public class DemandeurController {
         return "demandeur/form";
     }
 
-    @PostMapping({"", "/"})
+    @PostMapping
     public String create(
             @RequestParam String nom,
             @RequestParam(required = false) String prenom,
@@ -80,7 +80,7 @@ public class DemandeurController {
             redirectAttributes.addFlashAttribute("success", "Demandeur enregistré avec succès");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "demandeur/form";
+            return "redirect:/demandeurs/new";
         }
 
         return "redirect:/demandeurs";

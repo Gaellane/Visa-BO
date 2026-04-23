@@ -26,6 +26,13 @@ public class PasseportService {
 		LocalDate expiration,
 		Integer demandeurId) throws Exception{
 
+		if(numero==null || numero.isEmpty())
+			throw new IllegalArgumentException("Le numero est obligatoire");
+		if(delivrance==null )
+			throw new IllegalArgumentException("La date de delivrance est obligatoire");
+		if(expiration==null)
+			throw new IllegalArgumentException("La date d'expiration est obligatoire");
+
 		Demandeur demandeur = demandeurRepository.findById(demandeurId)
 			.orElseThrow(() -> new IllegalArgumentException("Demandeur introuvable: " + demandeurId));
 

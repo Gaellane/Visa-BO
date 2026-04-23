@@ -26,13 +26,13 @@ public class VisaTransformable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "date_entree")
+    @Column(name = "date_entree" , nullable = false)
     private LocalDate dateEntree;
 
-    @Column(name = "lieu")
+    @Column(name = "lieu" , nullable = false)
     private String lieu;
 
-    @Column(name = "expiration")
+    @Column(name = "expiration" , nullable = false)
     private LocalDate expiration;
 
     @Column(name="reference" , nullable = false)

@@ -36,6 +36,17 @@ public class DemandeurService {
         Integer statusMaritalId,
         Integer nationaliteId) throws Exception {
 
+        if(nom==null || nom.isEmpty()) 
+            throw new IllegalArgumentException("Le nom est obligatoire");
+        if(adresse==null || adresse.isEmpty()) 
+            throw new IllegalArgumentException("L'adresse est obligatoire");
+        if(tel==null || tel.isEmpty()) 
+            throw new IllegalArgumentException("Le tel est obligatoire");
+        if(dateNaissance==null) 
+            throw new IllegalArgumentException("La date de naissance est obligatoire");
+
+         
+
         Genre genre = genreRepository.findById(genreId)
             .orElseThrow(() -> new IllegalArgumentException("Genre introuvable: " + genreId));
         StatusMarital statusMarital = statusMaritalRepository.findById(statusMaritalId)
