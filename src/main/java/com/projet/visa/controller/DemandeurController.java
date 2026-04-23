@@ -39,6 +39,8 @@ public class DemandeurController {
     public String detail(@PathVariable Integer id, Model model) {
         model.addAttribute("demandeur", demandeurService.findById(id));
         model.addAttribute("passeports", passeportService.findByDemandeur(id));
+        model.addAttribute("visaTransformables", visaTransformableService.findByDemandeur(id));
+        model.addAttribute("canDemande", visaTransformableService.findByDemandeurAndDateBetween(id, LocalDate.now()).size()>0);
         return "demandeur/detail";
     }  
 
