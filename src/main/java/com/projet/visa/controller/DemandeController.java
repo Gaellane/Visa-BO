@@ -2,11 +2,13 @@ package com.projet.visa.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -61,13 +63,23 @@ public class DemandeController {
 
     @GetMapping("/new")
     public String createForm(@RequestParam Integer demandeurId, Model model) {
-        model.addAttribute("demandeur", demandeurService.findById(demandeurId));
-        model.addAttribute("visaTypes", demandeService.findAllVisaTypes());
-        model.addAttribute("demandeTypes", demandeService.findAllDemandeTypes());
+        populateForm(model, demandeurService.findById(demandeurId), null, List.of());
         return "demande/form";
     }
 
-    @PostMapping("")
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Integer id, Model model) {
+        Demande demande = demandeService.getById(id);
+        List<Integer> selectedPieces = demandePieceService.findByDemandeId(id)
+            .stream()
+            .map(piece -> piece.getPiece().getId())
+            .collect(Collectors.toList());
+
+        populateForm(model, demande.getDemandeur(), demande, selectedPieces);
+        return "demande/form";
+    }
+
+    @PostMapping
     public String create(
             @RequestParam Integer demandeurId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDemande,
@@ -81,12 +93,32 @@ public class DemandeController {
             redirectAttributes.addFlashAttribute("success", "Demande enregistree avec succes");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "demande/form";
+            return "redirect:/demandes/new?demandeurId=" + demandeurId;
         }
         return "redirect:/demandeurs/" + demandeurId;
     }
 
-    @GetMapping("/liste")
+    @PostMapping("/{id}/edit")
+    public String update(
+            @PathVariable Integer id,
+            @RequestParam Integer demandeurId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDemande,
+            @RequestParam Integer visaTypeId,
+            @RequestParam Integer demandeTypeId,
+            @RequestParam(required = false, name = "selectedPieces") List<Integer> selectedPieces,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            demandeService.update(id, dateDemande, visaTypeId, demandeTypeId, selectedPieces);
+            redirectAttributes.addFlashAttribute("success", "Demande modifiee avec succes");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/demandes/" + id + "/edit";
+        }
+        return "redirect:/demandeurs/" + demandeurId;
+    }
+
+    @GetMapping
     public String getListeDemande(
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateMin,
@@ -108,10 +140,10 @@ public class DemandeController {
         model.addAttribute("visaTypeId", visaTypeId);
 
 
-        return "demande/liste";
+        return "demande/list";
     }
 
-    @GetMapping("/fiche")
+    @GetMapping("/details")
     public String getDetailsDemande(@RequestParam Integer id, Model model){
         Demande demande = demandeService.getById(id);
         model.addAttribute("demande", demande);
@@ -125,7 +157,15 @@ public class DemandeController {
         List<DemandePiece> pieces = demandePieceService.findByDemandeId(id);
         model.addAttribute("pieces", pieces);
 
-        return "demande/fiche";
+        return "demande/detail";
+    }
+
+    private void populateForm(Model model, com.projet.visa.model.Demandeur demandeur, Demande demande, List<Integer> selectedPiecesIds) {
+        model.addAttribute("demandeur", demandeur);
+        model.addAttribute("demande", demande);
+        model.addAttribute("selectedPiecesIds", selectedPiecesIds == null ? List.of() : selectedPiecesIds);
+        model.addAttribute("visaTypes", demandeService.findAllVisaTypes());
+        model.addAttribute("demandeTypes", demandeService.findAllDemandeTypes());
     }
 
     @GetMapping("/transfert")

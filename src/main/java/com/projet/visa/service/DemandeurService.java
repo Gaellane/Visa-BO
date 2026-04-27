@@ -36,14 +36,64 @@ public class DemandeurService {
         Integer statusMaritalId,
         Integer nationaliteId) throws Exception {
 
+        return saveDemandeur(null, nom, prenom, nomJeuneFille, adresse, mail, dateNaissance, tel, genreId, statusMaritalId, nationaliteId);
+    }
+
+    public Demandeur update(
+        Integer id,
+        String nom,
+        String prenom,
+        String nomJeuneFille,
+        String adresse,
+        String mail,
+        LocalDate dateNaissance,
+        String tel,
+        Integer genreId,
+        Integer statusMaritalId,
+        Integer nationaliteId) throws Exception {
+
+        return saveDemandeur(id, nom, prenom, nomJeuneFille, adresse, mail, dateNaissance, tel, genreId, statusMaritalId, nationaliteId);
+    }
+
+    private Demandeur saveDemandeur(
+        Integer id,
+        String nom,
+        String prenom,
+        String nomJeuneFille,
+        String adresse,
+        String mail,
+        LocalDate dateNaissance,
+        String tel,
+        Integer genreId,
+        Integer statusMaritalId,
+        Integer nationaliteId) throws Exception {
+
+        if(nom==null || nom.isEmpty()) 
+            throw new IllegalArgumentException("Le nom est obligatoire");
+        if(adresse==null || adresse.isEmpty()) 
+            throw new IllegalArgumentException("L'adresse est obligatoire");
+        if(tel==null || tel.isEmpty()) 
+            throw new IllegalArgumentException("Le tel est obligatoire");
+        if(dateNaissance==null) 
+            throw new IllegalArgumentException("La date de naissance est obligatoire");
+
+         
+
         Genre genre = genreRepository.findById(genreId)
             .orElseThrow(() -> new IllegalArgumentException("Genre introuvable: " + genreId));
         StatusMarital statusMarital = statusMaritalRepository.findById(statusMaritalId)
             .orElseThrow(() -> new IllegalArgumentException("Status marital introuvable: " + statusMaritalId));
         Nationalite nationalite = nationaliteRepository.findById(nationaliteId)
             .orElseThrow(() -> new IllegalArgumentException("Nationalite introuvable: " + nationaliteId));
-            
-        Demandeur demandeur = new Demandeur();
+
+        Demandeur demandeur;
+        if (id == null) {
+            demandeur = new Demandeur();
+        } else {
+            demandeur = demandeurRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Demandeur introuvable: " + id));
+        }
+
         demandeur.setNom(nom);
         demandeur.setPrenom(prenom);
         demandeur.setNomJeuneFille(nomJeuneFille);

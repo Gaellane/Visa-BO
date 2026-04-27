@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface DemandePieceRepository extends JpaRepository<DemandePiece, Integer> {
     List<DemandePiece> findByDemandeId(Integer demandeId);
+    void deleteByDemandeId(Integer demandeId);
 
 }

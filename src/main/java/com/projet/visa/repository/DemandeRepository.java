@@ -13,7 +13,7 @@ public interface DemandeRepository extends JpaRepository<Demande, Integer> {
     public List<Demande> findAll();
     public Optional<Demande> findById(Integer id);
 
-    @Query("SELECT d FROM Demande d WHERE (:dateMin IS NULL OR d.dateDemande >= :dateMin) AND (:dateMax IS NULL OR d.dateDemande <= :dateMax) AND (:typeId IS NULL OR d.type.id = :typeId) AND (:visaTypeId IS NULL OR d.typeVisa.id = :visaTypeId)")
+    @Query("SELECT d FROM Demande d WHERE (cast(:dateMin as date) IS NULL OR d.dateDemande >= :dateMin) AND (cast(:dateMax as date) IS NULL OR d.dateDemande <= :dateMax) AND (cast(:typeId as integer) IS NULL OR d.type.id = :typeId) AND (cast(:visaTypeId as integer) IS NULL OR d.typeVisa.id = :visaTypeId)")
     List<Demande> search(
     @Param("dateMin") LocalDate dateMin,
     @Param("dateMax") LocalDate dateMax,

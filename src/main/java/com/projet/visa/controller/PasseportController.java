@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +33,14 @@ public class PasseportController {
         return "passeport/form";
     }
 
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Integer id, Model model) {
+        com.projet.visa.model.Passeport passeport = passeportService.findById(id);
+        model.addAttribute("demandeur", passeport.getDemandeur());
+        model.addAttribute("passeport", passeport);
+        return "passeport/form";
+    }
+
     @PostMapping("")
     public String create(
             @RequestParam Integer demandeurId,
@@ -46,6 +55,27 @@ public class PasseportController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "passeport/form";
+        }
+        return "redirect:/demandeurs/" + demandeurId;
+    }
+
+    @PostMapping("/{id}/edit")
+    public String update(
+            @PathVariable Integer id,
+            @RequestParam String numero,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate delivrance,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate expiration,
+            RedirectAttributes redirectAttributes) {
+
+        com.projet.visa.model.Passeport passeport = passeportService.findById(id);
+        Integer demandeurId = passeport.getDemandeur().getId();
+
+        try {
+            passeportService.update(id, numero, delivrance, expiration);
+            redirectAttributes.addFlashAttribute("success", "Passeport modifie avec succes");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/passeports/" + id + "/edit";
         }
         return "redirect:/demandeurs/" + demandeurId;
     }

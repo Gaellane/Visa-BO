@@ -26,13 +26,13 @@ public class Passeport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "numero")
+    @Column(name = "numero" , nullable = false)
     private String numero;
 
-    @Column(name = "delivrance")
+    @Column(name = "delivrance" , nullable = false)
     private LocalDate delivrance;
 
-    @Column(name = "expiration")
+    @Column(name = "expiration" , nullable = false)
     private LocalDate expiration;
 
     @ManyToOne(optional = false)

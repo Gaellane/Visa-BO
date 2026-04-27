@@ -26,10 +26,46 @@ public class PasseportService {
 		LocalDate expiration,
 		Integer demandeurId) throws Exception{
 
+		return savePasseport(null, numero, delivrance, expiration, demandeurId);
+	}
+
+	public Passeport update(
+		Integer id,
+		String numero,
+		LocalDate delivrance,
+		LocalDate expiration) throws Exception {
+
+		Passeport existingPasseport = passeportRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Passeport introuvable: " + id));
+
+		return savePasseport(id, numero, delivrance, expiration, existingPasseport.getDemandeur().getId());
+	}
+
+	private Passeport savePasseport(
+		Integer id,
+		String numero,
+		LocalDate delivrance,
+		LocalDate expiration,
+		Integer demandeurId) throws Exception{
+
+		if(numero==null || numero.isEmpty())
+			throw new IllegalArgumentException("Le numero est obligatoire");
+		if(delivrance==null )
+			throw new IllegalArgumentException("La date de delivrance est obligatoire");
+		if(expiration==null)
+			throw new IllegalArgumentException("La date d'expiration est obligatoire");
+
 		Demandeur demandeur = demandeurRepository.findById(demandeurId)
 			.orElseThrow(() -> new IllegalArgumentException("Demandeur introuvable: " + demandeurId));
 
-		Passeport passeport = new Passeport();
+		Passeport passeport;
+		if (id == null) {
+			passeport = new Passeport();
+		} else {
+			passeport = passeportRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Passeport introuvable: " + id));
+		}
+
 		passeport.setNumero(numero);
 		passeport.setDelivrance(delivrance);
 		passeport.setExpiration(expiration);
