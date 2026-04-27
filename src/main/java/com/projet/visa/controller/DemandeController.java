@@ -18,6 +18,7 @@ import com.projet.visa.service.DemandePieceService;
 import com.projet.visa.service.DemandeService;
 import com.projet.visa.service.DemandeTypeService;
 import com.projet.visa.service.PasseportService;
+import com.projet.visa.service.VisaTransformableService;
 import com.projet.visa.service.VisaTypeService;
 
 

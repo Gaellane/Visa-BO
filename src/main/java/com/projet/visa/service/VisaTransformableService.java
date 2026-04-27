@@ -42,6 +42,15 @@ public class VisaTransformableService {
         return visaTransformableRepository.findByPasseport_Demandeur_Id(demandeurId);
     }
 
+    public List<VisaTransformable> findByDemandeurAndDateBetween(Integer demandeurId,LocalDate date) { 
+        if(date ==null) {
+            return findByDemandeur(demandeurId);
+        }
+        System.out.println("\n\n"+visaTransformableRepository.findByDemandeurAndDateBetween(demandeurId, date).size());
+        return visaTransformableRepository.findByDemandeurAndDateBetween(demandeurId, date);
+    }
+
+
     public VisaTransformable findById(Integer id) {
         return visaTransformableRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Visa transformable introuvable: " + id));
