@@ -32,11 +32,8 @@ public class CarteResident {
     @Column(name = "date_entree", nullable = false)
     private LocalDate dateEntree;
 
-    @Column(name = "date_expiration")
+    @Column(name = "date_expiration", nullable = false)
     private LocalDate dateExpiration;
-
-    @Column(name = "lieu_entree")
-    private String lieuEntree;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_resident", nullable = false)

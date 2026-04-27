@@ -46,6 +46,9 @@ public class DemandeurController {
         model.addAttribute("demandeur", demandeurService.findById(id));
         model.addAttribute("passeports", passeportService.findByDemandeur(id));
         model.addAttribute("visaTransformables", visaTransformableService.findByDemandeur(id));
+        model.addAttribute("canDemande" , demandeurService.canCreateDemande(id));
+        model.addAttribute("canCreateEmpty" , demandeurService.canCreateEmpty(id));
+
         return "demandeur/detail";
     }  
 

@@ -130,6 +130,9 @@
             <c:if test="${canDemande}">
                 <a class="btn btn-secondary" href="${pageContext.request.contextPath}/demandes/new?demandeurId=${demandeur.id}">Ajouter demande</a>
             </c:if>
+            <c:if test="${canCreateEmpty}">
+                <a class="btn btn-secondary" href="${pageContext.request.contextPath}/demandes/transfertempty?demandeurId=${demandeur.id}">Transfert sans donnees anterieures</a>
+            </c:if>
             <a class="btn btn-back" href="${pageContext.request.contextPath}/demandeurs">Retour liste</a>
         </div>
     </div>

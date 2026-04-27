@@ -23,6 +23,7 @@ import com.projet.visa.service.PasseportService;
 import com.projet.visa.service.VisaTransformableService;
 import com.projet.visa.service.VisaTypeService;
 import com.projet.visa.service.VisaTransformableService;
+import com.projet.visa.dto.DemandeListDto;
 
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -128,7 +129,7 @@ public class DemandeController {
             @RequestParam(required = false) Integer visaTypeId,
         Model model) {
 
-        List<Demande> demandes = demandeService.search(dateMin, dateMax, typeId, visaTypeId);
+        List<DemandeListDto> demandes = demandeService.search(dateMin, dateMax, typeId, visaTypeId);
 
         model.addAttribute("demandes", demandes);
         model.addAttribute("demandeTypes", demandeTypeService.findAll());
@@ -138,6 +139,7 @@ public class DemandeController {
         model.addAttribute("dateMax", dateMax);
         model.addAttribute("typeId", typeId);
         model.addAttribute("visaTypeId", visaTypeId);
+        model.addAttribute("idModifiable", demandeService.idModifiable());
 
 
         return "demande/list";
@@ -145,7 +147,7 @@ public class DemandeController {
 
     @GetMapping("/details")
     public String getDetailsDemande(@RequestParam Integer id, Model model){
-        Demande demande = demandeService.getById(id);
+        DemandeListDto demande = demandeService.getDtoById(id);
         model.addAttribute("demande", demande);
 
         Passeport passeport = null;
@@ -157,6 +159,7 @@ public class DemandeController {
         List<DemandePiece> pieces = demandePieceService.findByDemandeId(id);
         model.addAttribute("pieces", pieces);
 
+        model.addAttribute("idModifiable", demandeService.idModifiable());
         return "demande/detail";
     }
 
@@ -168,50 +171,98 @@ public class DemandeController {
         model.addAttribute("demandeTypes", demandeService.findAllDemandeTypes());
     }
 
-    @GetMapping("/transfert")
-    public String transfertForm(@RequestParam Integer demandeurId, Model model) {
+    @GetMapping("/transfertempty")
+    public String transfertEmptyForm(@RequestParam Integer demandeurId, Model model) {
         model.addAttribute("demandeur", demandeurService.findById(demandeurId));
-        
+        model.addAttribute("passeports", passeportService.findByDemandeur(demandeurId));
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("visaTypes", demandeService.findAllVisaTypes());
-
-        return "demande/transfert";
+        return "demande/transfertEmpty";
     }
 
-    @PostMapping("/newTransfert")
-    public String newTransfert(@RequestParam Integer demandeurId,
-            @RequestParam String numero,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate delivrance,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate expiration,
-            RedirectAttributes redirectAttributes,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEntree,
-            @RequestParam String reference,
-            @RequestParam String lieu,
-            @RequestParam Integer visaTypeId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDemande,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate expirationVisaTransf
+    @GetMapping("/duplicataempty")
+    public String duplicataEmptyForm(@RequestParam Integer demandeurId, Model model) {
+        model.addAttribute("demandeur", demandeurService.findById(demandeurId));
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("visaTypes", demandeService.findAllVisaTypes());
+        return "demande/duplicataEmpty";
+    }
+
+    @PostMapping("/transfertempty")
+    public String transfertEmpty(
+            
+            @RequestParam("demandeurId") Integer demandeurId,
+            @RequestParam("visaTypeId") Integer visaTypeId,
+            @RequestParam("passeportId") Integer passeportId,
+
+            @RequestParam("dateDemande") String dateDemande,
+
+            @RequestParam("dateObtention") String dateObtention,
+
+            @RequestParam("dateExpiration") String dateExpiration,
+            RedirectAttributes redirectAttributes
+        
         ) {
-
+        
         try {
-            List<Integer> pieces = new java.util.ArrayList<>();
-            demandeService.createTransfert(dateDemande, demandeurId, visaTypeId, 3, pieces);
-            redirectAttributes.addFlashAttribute("success", "Demande de transfert enregistree avec succes");
-
-            passeportService.create(numero, delivrance, expiration, demandeurId);
-            redirectAttributes.addFlashAttribute("success", "Passeport enregistre avec succès");
-
-            Integer passeportId = passeportService.findByDemandeurId(demandeurId).getId();
-
-            visaTransformableService.create(dateEntree, reference, lieu, expirationVisaTransf, passeportId);
-            redirectAttributes.addFlashAttribute("success", "Visa transformable enregistre avec succes");
-
-           
-            return "redirect:/demandeurs/" + demandeurId;
+            if (demandeurId == null || visaTypeId == null || passeportId == null || dateObtention == null || dateExpiration == null) {
+                throw new IllegalArgumentException("Tous les champs sont requis.");
+            }
+            LocalDate dateDemandeParsed = null;
+            if (dateDemande != null && !dateDemande.isEmpty()) {
+                dateDemandeParsed = LocalDate.parse(dateDemande);
+            } else {
+                dateDemandeParsed = LocalDate.now();
+            }
+            LocalDate dateObtentionParsed = LocalDate.parse(dateObtention); 
+            LocalDate dateExpirationParsed = LocalDate.parse(dateExpiration);
+            demandeService.transfertEmpty(demandeurId, dateDemandeParsed, visaTypeId, dateObtentionParsed, dateExpirationParsed);
+            redirectAttributes.addFlashAttribute("success", "Demande Sans donnee anterieur cree avec succes");
+            
+            return "redirect:/demandes" ;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/demandes/transfert?demandeurId=" + demandeurId;
+            return "redirect:/demandes/transfertempty?demandeurId=" + demandeurId;
         }
-        
+
     }
+
+
+    // @PostMapping("/newTransfert")
+    // public String newTransfert(@RequestParam Integer demandeurId,
+    //         @RequestParam String numero,
+    //         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate delivrance,
+    //         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate expiration,
+    //         RedirectAttributes redirectAttributes,
+    //         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEntree,
+    //         @RequestParam String reference,
+    //         @RequestParam String lieu,
+    //         @RequestParam Integer visaTypeId,
+    //         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDemande,
+    //         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate expirationVisaTransf
+    //     ) {
+
+    //     try {
+    //         List<Integer> pieces = new java.util.ArrayList<>();
+    //         demandeService.createTransfert(dateDemande, demandeurId, visaTypeId, 3, pieces);
+    //         redirectAttributes.addFlashAttribute("success", "Demande de transfert enregistree avec succes");
+
+    //         passeportService.create(numero, delivrance, expiration, demandeurId);
+    //         redirectAttributes.addFlashAttribute("success", "Passeport enregistre avec succès");
+
+    //         Integer passeportId = passeportService.findByDemandeurId(demandeurId).getId();
+
+    //         visaTransformableService.create(dateEntree, reference, lieu, expirationVisaTransf, passeportId);
+    //         redirectAttributes.addFlashAttribute("success", "Visa transformable enregistre avec succes");
+
+           
+    //         return "redirect:/demandeurs/" + demandeurId;
+    //     } catch (Exception e) {
+    //         redirectAttributes.addFlashAttribute("error", e.getMessage());
+    //         return "redirect:/demandes/transfert?demandeurId=" + demandeurId;
+    //     }
+        
+    // }
     
 }   
 

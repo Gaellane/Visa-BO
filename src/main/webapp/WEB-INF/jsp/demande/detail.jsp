@@ -108,7 +108,10 @@
         </c:choose>
 
         <div class="actions">
-            <a class="btn btn-primary" href="${pageContext.request.contextPath}/demandes/${demande.id}/edit">Modifier demande</a>
+            <c:if test="${demande.status != null && demande.status.id == idModifiable}">
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/demandes/${demande.id}/edit">Modifier demande</a>
+            </c:if>
+            
             <a class="btn btn-back" href="${pageContext.request.contextPath}/demandes">Retour liste demandes</a>
         </div>
     </div>
