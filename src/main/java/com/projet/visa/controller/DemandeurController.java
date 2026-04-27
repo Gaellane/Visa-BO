@@ -35,7 +35,7 @@ public class DemandeurController {
         this.visaTransformableService = visaTransformableService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public String list(Model model) {
         model.addAttribute("demandeurs", demandeurService.findAll());
         return "demandeur/list";
