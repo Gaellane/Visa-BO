@@ -29,7 +29,7 @@ public class DemandeurController {
         this.passeportService=passeportService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public String list(Model model) {
         model.addAttribute("demandeurs", demandeurService.findAll());
         return "demandeur/list";
@@ -51,7 +51,7 @@ public class DemandeurController {
         return "demandeur/form";
     }
 
-    @PostMapping("/")
+    @PostMapping
     public String create(
             @RequestParam String nom,
             @RequestParam(required = false) String prenom,
