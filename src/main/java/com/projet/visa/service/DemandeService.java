@@ -25,7 +25,9 @@ import com.projet.visa.repository.DemandeRepository;
 import com.projet.visa.repository.DemandeStatusRepository;
 import com.projet.visa.repository.DemandeTypeRepository;
 import com.projet.visa.repository.DemandeurRepository;
+import com.projet.visa.repository.PasseportRepository;
 import com.projet.visa.repository.PieceJustificativeRepository;
+import com.projet.visa.repository.VisaTransformableRepository;
 import com.projet.visa.repository.VisaTypeRepository;
 
 
@@ -39,8 +41,10 @@ public class DemandeService {
     private final DemandeTypeRepository demandeTypeRepository;
     private final DemandeStatusRepository demandeStatusRepository;
     private final DemandeHistoryRepository demandeHistoryRepository;
+    private final VisaTransformableRepository visaTransformableRepository;
+    private final PasseportRepository passeportRepository;
 
-    private final Integer STATUS_CREATE_ID=1;
+    private Integer STATUS_CREATE_ID=1;
 
     public DemandeService(
             DemandeRepository demandeRepository,
@@ -50,7 +54,9 @@ public class DemandeService {
             VisaTypeRepository visaTypeRepository,
             DemandeTypeRepository demandeTypeRepository,
             DemandeStatusRepository demandeStatusRepository,
-            DemandeHistoryRepository demandeHistoryRepository) {
+            DemandeHistoryRepository demandeHistoryRepository,
+            VisaTransformableRepository visaTransformableRepository,
+            PasseportRepository passeportRepository) {
         this.demandeRepository = demandeRepository;
         this.pieceJustificativeRepository = pieceJustificativeRepository;
         this.demandePieceRepository = demandePieceRepository;
@@ -59,6 +65,8 @@ public class DemandeService {
         this.demandeTypeRepository = demandeTypeRepository;
         this.demandeStatusRepository = demandeStatusRepository;
         this.demandeHistoryRepository = demandeHistoryRepository;
+        this.visaTransformableRepository = visaTransformableRepository;
+        this.passeportRepository=passeportRepository;
     }
 
     @Transactional 
@@ -70,8 +78,16 @@ public class DemandeService {
         List<Integer> selectedPieces
     ) throws Exception {
         LocalDateTime now  = LocalDateTime.now();
-
+        LocalDate today = now.toLocalDate();
         Demandeur demandeur = demandeurRepository.findById(demandeurId).orElseThrow(() -> new IllegalArgumentException("Demandeur introuvable: " + demandeurId));
+
+        if(visaTransformableRepository.findByDemandeurAndDateBetween(demandeurId,today).size()==0) {
+            throw new Exception("Ce demandeur n'as pas encore de visa transformable");
+        }
+        if(passeportRepository.findByDemandeurIdAndDateBetween(demandeurId,today).size()==0) 
+            throw new Exception("Ce demandeur n'a pas encore de passeport");
+
+
         VisaType visaType = visaTypeRepository.findById(visaTypeId).orElseThrow(() -> new IllegalArgumentException("Type visa introuvable: " + visaTypeId));
         DemandeType demandeType = demandeTypeRepository.findById(demandeTypeId).orElseThrow(() -> new IllegalArgumentException("Type demande introuvable: " + demandeTypeId));
 
