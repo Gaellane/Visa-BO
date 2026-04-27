@@ -13,18 +13,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.projet.visa.model.Demande;
 import com.projet.visa.model.DemandePiece;
 import com.projet.visa.model.Passeport;
-
+import com.projet.visa.model.PieceJustificative;
 import com.projet.visa.service.DemandePieceService;
 import com.projet.visa.service.DemandeService;
 import com.projet.visa.service.DemandeTypeService;
 import com.projet.visa.service.PasseportService;
 import com.projet.visa.service.VisaTypeService;
+import com.projet.visa.service.VisaTransformableService;
 
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projet.visa.service.DemandeurService;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 @RequestMapping("/demandes")
@@ -36,6 +39,7 @@ public class DemandeController {
     private final VisaTypeService visaTypeService;
     private final DemandePieceService demandePieceService;
     private final PasseportService passeportService;
+    private final VisaTransformableService visaTransformableService;
 
     public DemandeController(
             DemandeurService demandeurService,
@@ -43,13 +47,15 @@ public class DemandeController {
             DemandeTypeService demandeTypeService,
             VisaTypeService visaTypeService,
             DemandePieceService demandePieceService,
-            PasseportService passeportService) {
+            PasseportService passeportService,
+            VisaTransformableService visaTransformableService) {
         this.demandeurService = demandeurService;
         this.demandeService = demandeService;
         this.demandeTypeService = demandeTypeService;
         this.visaTypeService = visaTypeService;
         this.demandePieceService = demandePieceService;
         this.passeportService = passeportService;
+        this.visaTransformableService = visaTransformableService;
     }
 
     @GetMapping("/new")
@@ -120,4 +126,53 @@ public class DemandeController {
 
         return "demande/fiche";
     }
-}
+
+    @GetMapping("/transfert")
+    public String transfertForm(@RequestParam Integer demandeurId, Model model) {
+        model.addAttribute("demandeur", demandeurService.findById(demandeurId));
+        
+        model.addAttribute("visaTypes", demandeService.findAllVisaTypes());
+
+        return "demande/transfert";
+    }
+
+    @PostMapping("/newTransfert")
+    public String newTransfert(@RequestParam Integer demandeurId,
+            @RequestParam String numero,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate delivrance,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate expiration,
+            RedirectAttributes redirectAttributes,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEntree,
+            @RequestParam String reference,
+            @RequestParam String lieu,
+            @RequestParam Integer visaTypeId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDemande,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate expirationVisaTransf
+        ) {
+
+        try {
+            List<Integer> pieces = new java.util.ArrayList<>();
+            demandeService.createTransfert(dateDemande, demandeurId, visaTypeId, 3, pieces);
+            redirectAttributes.addFlashAttribute("success", "Demande de transfert enregistree avec succes");
+
+            passeportService.create(numero, delivrance, expiration, demandeurId);
+            redirectAttributes.addFlashAttribute("success", "Passeport enregistre avec succès");
+
+            Integer passeportId = passeportService.findByDemandeurId(demandeurId).getId();
+
+            visaTransformableService.create(dateEntree, reference, lieu, expirationVisaTransf, passeportId);
+            redirectAttributes.addFlashAttribute("success", "Visa transformable enregistre avec succes");
+
+           
+            return "redirect:/demandeurs/" + demandeurId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/demandes/transfert?demandeurId=" + demandeurId;
+        }
+        
+    }
+    
+}   
+
+
+
