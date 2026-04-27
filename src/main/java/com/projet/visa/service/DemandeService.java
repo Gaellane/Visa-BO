@@ -47,7 +47,7 @@ public class DemandeService {
     private final VisaTransformableRepository visaTransformableRepository;
     private final PasseportRepository passeportRepository;
 
-    private final Integer STATUS_CREATE_ID=1;
+    private Integer STATUS_CREATE_ID=1;
 
     public DemandeService(
             DemandeRepository demandeRepository,
@@ -157,6 +157,26 @@ public class DemandeService {
 
         return demande;
     
+    }
+
+    @Transactional
+    public Demande createTransfert(
+            LocalDate date,
+            Integer demandeurId,
+            Integer visaTypeId,
+            Integer demandeTypeId,
+            List<Integer> selectedPieces
+    ) throws Exception {
+        
+        selectedPieces = pieceJustificativeRepository.findIdsByTypeVisa_IdIsNullOrTypeVisa_Id(visaTypeId);
+
+        Demande demande = create(date, demandeurId, visaTypeId, demandeTypeId, selectedPieces);
+        DemandeStatus status = demandeStatusRepository.findById(demandeTypeId).orElseThrow(()-> new IllegalArgumentException("Status introuvable " +STATUS_CREATE_ID));
+
+        DemandeHistory history = demandeHistoryRepository.findByIdDemande(demande.getId());
+        history.setStatus(status);
+        return demandeRepository.save(demande);
+
     }
 
     public List<VisaType> findAllVisaTypes() {
