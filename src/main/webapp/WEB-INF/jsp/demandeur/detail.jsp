@@ -125,10 +125,11 @@
         <div class="actions">
             <a class="btn btn-secondary" href="${pageContext.request.contextPath}/demandeurs/${demandeur.id}/edit">Modifier demandeur</a>
             <a class="btn btn-primary" href="${pageContext.request.contextPath}/passeports/new?demandeurId=${demandeur.id}">Ajouter passeport</a>
-            <a class="btn btn-secondary" href="${pageContext.request.contextPath}/demandes/transfert?demandeurId=${demandeur.id}">Transfert</a>
-            
             <c:if test="${canDemande}">
                 <a class="btn btn-secondary" href="${pageContext.request.contextPath}/demandes/new?demandeurId=${demandeur.id}">Ajouter demande</a>
+            </c:if>
+            <c:if test="${canCreateEmpty}">
+                <a class="btn btn-secondary" href="${pageContext.request.contextPath}/demandes/empty?demandeurId=${demandeur.id}">Transfert sans donnees anterieures</a>
             </c:if>
             <a class="btn btn-back" href="${pageContext.request.contextPath}/demandeurs">Retour liste</a>
         </div>

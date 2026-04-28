@@ -67,6 +67,7 @@
                             <th>Demandeur</th>
                             <th>Type</th>
                             <th>Type visa</th>
+                            <th>Statut</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -77,7 +78,7 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${demande.demandeur != null}">
-                                            ${demande.demandeur.id} - ${demande.demandeur.nom} ${demande.demandeur.prenom}
+                                            ${demande.demandeur.nom} ${demande.demandeur.prenom}
                                         </c:when>
                                         <c:otherwise>-</c:otherwise>
                                     </c:choose>
@@ -85,7 +86,7 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${demande.type != null}">
-                                            ${demande.type.id} - ${demande.type.valeur}
+                                            ${demande.type.valeur}
                                         </c:when>
                                         <c:otherwise>-</c:otherwise>
                                     </c:choose>
@@ -93,14 +94,24 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${demande.typeVisa != null}">
-                                            ${demande.typeVisa.id} - ${demande.typeVisa.valeur}
+                                            ${demande.typeVisa.valeur}
+                                        </c:when>
+                                        <c:otherwise>-</c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${demande.status != null}">
+                                            ${demande.status.valeur}
                                         </c:when>
                                         <c:otherwise>-</c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td>
                                     <a class="btn-action" href="${pageContext.request.contextPath}/demandes/details?id=${demande.id}">Voir</a>
-                                    <a class="btn-action" href="${pageContext.request.contextPath}/demandes/${demande.id}/edit">Modifier</a>
+                                    <c:if test="${demande.status != null && demande.status.id == idModifiable}">
+                                        <a class="btn-action" href="${pageContext.request.contextPath}/demandes/${demande.id}/edit">Modifier</a>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>

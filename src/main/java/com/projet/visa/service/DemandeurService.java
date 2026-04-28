@@ -13,6 +13,9 @@ import com.projet.visa.repository.DemandeurRepository;
 import com.projet.visa.repository.GenreRepository;
 import com.projet.visa.repository.NationaliteRepository;
 import com.projet.visa.repository.StatusMaritalRepository;
+import com.projet.visa.repository.VisaTransformableRepository;
+import com.projet.visa.repository.VisaRepository;
+import com.projet.visa.repository.PasseportRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +26,9 @@ public class DemandeurService {
     private final StatusMaritalRepository statusMaritalRepository;
     private final GenreRepository genreRepository;
     private final NationaliteRepository nationaliteRepository;
+    private final VisaTransformableRepository visaTransformableRepository;
+    private final PasseportRepository passeportRepository;
+    private final VisaRepository visaRepository;
 
     public Demandeur create(
         String nom,
@@ -128,4 +134,19 @@ public class DemandeurService {
         return demandeurRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Demandeur introuvable: " + id));
     }
+    public Boolean canCreateDemande(Integer demandeurId ) {
+        LocalDate today = LocalDate.now();
+        return visaTransformableRepository.findByDemandeurAndDateBetween(demandeurId,today).size()>0
+            && passeportRepository.findByDemandeurIdAndDateBetween(demandeurId,today).size()>0;
+    }
+    public Boolean canCreateDemande(Integer demandeurId, LocalDate date) {
+        return visaTransformableRepository.findByDemandeurAndDateBetween(demandeurId,date).size()>0
+            && passeportRepository.findByDemandeurIdAndDateBetween(demandeurId,date).size()>0;
+    }
+    public Boolean canCreateEmpty(Integer demandeurId ) {
+        LocalDate today = LocalDate.now();
+        return visaRepository.findByDemandeurAndDateBetween(demandeurId,today).size()==0
+            && passeportRepository.findByDemandeurIdAndDateBetween(demandeurId,today).size()>0;
+    }
+    
 }
