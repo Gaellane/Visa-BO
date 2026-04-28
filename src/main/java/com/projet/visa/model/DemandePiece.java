@@ -37,6 +37,6 @@ public class DemandePiece {
     private String cheminPiece;
 
     public boolean isAlreadyScanned() {
-        return cheminPiece!=null && !cheminPiece.isEmpty() ;
+        return !cheminPiece.isEmpty() || cheminPiece!=null;
     }
 }

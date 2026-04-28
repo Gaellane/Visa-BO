@@ -53,8 +53,7 @@ public class DemandeService {
     private final PasseportRepository passeportRepository;
     private final VisaRepository visaRepository;
     private final CarteResidentRepository carteResidentRepository;
-    private final UploadDemandePieceService uploadDemandePieceService;
-    
+    private final DemandePieceService demandePieceService;
 
 
     private Integer STATUS_CREATE_ID=1;
@@ -78,7 +77,7 @@ public class DemandeService {
             PasseportRepository passeportRepository ,
             VisaRepository visaRepository,
             CarteResidentRepository carteResidentRepository,
-            UploadDemandePieceService uploadDemandePieceService) {
+            DemandePieceService demandePieceService) {
         this.demandeRepository = demandeRepository;
         this.pieceJustificativeRepository = pieceJustificativeRepository;
         this.demandePieceRepository = demandePieceRepository;
@@ -91,7 +90,7 @@ public class DemandeService {
         this.passeportRepository=passeportRepository;
         this.visaRepository=visaRepository;
         this.carteResidentRepository=carteResidentRepository;
-        this.uploadDemandePieceService=uploadDemandePieceService;
+        this.demandePieceService=demandePieceService;
     }
 
     @Transactional 
@@ -356,7 +355,7 @@ public class DemandeService {
         if(files.size()<piecesSaved.size()) {
             throw new Exception("Pieces ulpoades insuffisants");
         }
-        List<DemandePiece> dps= uploadDemandePieceService.createDemandePieces(piecesSaved, files);
+        List<DemandePiece> dps= demandePieceService.createDemandePieces(piecesSaved, files);
 
         DemandeHistory history = new DemandeHistory();
         history.setDateChangement(now);

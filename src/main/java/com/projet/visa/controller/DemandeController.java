@@ -11,23 +11,29 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.projet.visa.dto.DemandeListDto;
 import com.projet.visa.model.Demande;
 import com.projet.visa.model.DemandePiece;
 import com.projet.visa.model.Passeport;
+import com.projet.visa.model.PieceJustificative;
 import com.projet.visa.service.DemandePieceService;
 import com.projet.visa.service.DemandeService;
 import com.projet.visa.service.DemandeTypeService;
-import com.projet.visa.service.DemandeurService;
 import com.projet.visa.service.PasseportService;
 import com.projet.visa.service.VisaTransformableService;
 import com.projet.visa.service.VisaTypeService;
+import com.projet.visa.service.VisaTransformableService;
+import com.projet.visa.dto.DemandeListDto;
+
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.projet.visa.service.DemandeurService;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Controller
@@ -255,14 +261,11 @@ public class DemandeController {
             redirectAttributes.addFlashAttribute("success", "Scan termine avec succes");
             return "redirect:/demandes/details?id=" + id;
         } catch (Exception e) {
-            e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/demandes/details?id=" + id;
         }
     }
 
-    // @GetMapping("/{demandeId}/pieces/{pieceId}/view")
-    // public 
 
     // @PostMapping("/newTransfert")
     // public String newTransfert(@RequestParam Integer demandeurId,
