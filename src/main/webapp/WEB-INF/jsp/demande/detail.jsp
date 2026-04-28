@@ -89,6 +89,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Piece</th>
+                                <th>Voir</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -96,6 +97,11 @@
                                 <tr>
                                     <td>${st.count}</td>
                                     <td>${piece.piece.nomPiece}</td>
+                                    <td>
+                                        <c:if test="${piece.isAlreadyScanned()}">
+                                            <a href="${pageContext.request.contextPath}/${piece.cheminPiece}" target="_blank">Voir</a>
+                                        </c:if>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
