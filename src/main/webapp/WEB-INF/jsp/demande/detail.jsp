@@ -111,6 +111,9 @@
             <c:if test="${demande.status != null && demande.status.id == idModifiable}">
                 <a class="btn btn-primary" href="${pageContext.request.contextPath}/demandes/${demande.id}/edit">Modifier demande</a>
             </c:if>
+            <c:if test="${not empty pieces}">
+                <a class="btn btn-secondary" href="${pageContext.request.contextPath}/demandes/${demande.id}/scan">Scanner pieces</a>
+            </c:if>
             
             <a class="btn btn-back" href="${pageContext.request.contextPath}/demandes">Retour liste demandes</a>
         </div>

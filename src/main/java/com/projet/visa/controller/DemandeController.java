@@ -1,7 +1,9 @@
 package com.projet.visa.controller;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.projet.visa.model.Demande;
 import com.projet.visa.model.DemandePiece;
@@ -227,6 +230,40 @@ public class DemandeController {
             return "redirect:/demandes/transfertempty?demandeurId=" + demandeurId;
         }
 
+    }
+
+    
+    @GetMapping("/{id}/scan")
+    public String scanForm(@PathVariable Integer id, Model model) {
+        Demande demande = demandeService.getById(id);
+        List<DemandePiece> pieces = demandePieceService.findByDemandeId(id);
+
+        model.addAttribute("demande", demande);
+        model.addAttribute("pieces", pieces);
+        return "demande/scan";
+    }
+
+    @PostMapping("/{id}/scan")
+    public String scannerDemandePieces(
+            @PathVariable Integer id,
+            @RequestParam Map<String, MultipartFile> files,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            Map<Integer, MultipartFile> filesByPieceId = new HashMap<>();
+            for (Map.Entry<String, MultipartFile> entry : files.entrySet()) {
+                if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                    filesByPieceId.put(Integer.valueOf(entry.getKey()), entry.getValue());
+                }
+            }
+
+            demandeService.scannerDemandePieces(id, filesByPieceId);
+            redirectAttributes.addFlashAttribute("success", "Scan termine avec succes");
+            return "redirect:/demandes/details?id=" + id;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/demandes/details?id=" + id;
+        }
     }
 
 

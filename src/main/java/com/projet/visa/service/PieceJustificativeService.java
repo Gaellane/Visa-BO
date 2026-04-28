@@ -30,6 +30,7 @@ public class PieceJustificativeService {
         for (PieceJustificative piece : pieces) {
             PieceJustificativeDto pieceDto = new PieceJustificativeDto(
                     piece.getId(),
+                    piece.getCode(),
                     piece.getNomPiece(),
                     piece.getObligatoire(),
                     piece.getTypeVisa() == null ? null : piece.getTypeVisa().getValeur());
@@ -43,4 +44,5 @@ public class PieceJustificativeService {
         return response;
     }
 
+    
 }

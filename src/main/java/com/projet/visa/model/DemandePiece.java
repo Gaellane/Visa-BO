@@ -1,5 +1,6 @@
 package com.projet.visa.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,4 +32,11 @@ public class DemandePiece {
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_piece", nullable = false)
     private PieceJustificative piece;
+
+    @Column(name="chemin_piece")
+    private String cheminPiece;
+
+    public boolean isAlreadyScanned() {
+        return !cheminPiece.isEmpty() || cheminPiece!=null;
+    }
 }
