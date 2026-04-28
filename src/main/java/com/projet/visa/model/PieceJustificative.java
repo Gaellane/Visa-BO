@@ -25,6 +25,9 @@ public class PieceJustificative {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "code")
+    private String code;
+
     @Column(name = "nom_piece")
     private String nomPiece;
 
@@ -34,4 +37,12 @@ public class PieceJustificative {
 
     @Column(name = "obligatoire", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean obligatoire= true;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }

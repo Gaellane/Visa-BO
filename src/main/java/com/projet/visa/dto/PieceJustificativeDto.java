@@ -12,6 +12,7 @@ import lombok.Setter;
 public class PieceJustificativeDto {
 
     private Integer id;
+    private String code;
     private String nomPiece;
     private Boolean obligatoire;
     private String typeVisa;

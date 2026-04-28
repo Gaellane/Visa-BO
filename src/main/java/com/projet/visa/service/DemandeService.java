@@ -3,6 +3,7 @@ package com.projet.visa.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.projet.visa.util.ReferenceGenerator;
 import com.projet.visa.model.CarteResident;
@@ -51,10 +53,12 @@ public class DemandeService {
     private final PasseportRepository passeportRepository;
     private final VisaRepository visaRepository;
     private final CarteResidentRepository carteResidentRepository;
+    private final DemandePieceService demandePieceService;
 
 
     private Integer STATUS_CREATE_ID=1;
     private Integer STATUS_VALIDATION_ID=3;
+    private Integer STATUS_SCAN_TEMNINE_ID=2;
 
     private Integer newDemandeTypeId=1;
     private Integer transfertTypeId=3;
@@ -72,7 +76,8 @@ public class DemandeService {
             VisaTransformableRepository visaTransformableRepository,
             PasseportRepository passeportRepository ,
             VisaRepository visaRepository,
-            CarteResidentRepository carteResidentRepository) {
+            CarteResidentRepository carteResidentRepository,
+            DemandePieceService demandePieceService) {
         this.demandeRepository = demandeRepository;
         this.pieceJustificativeRepository = pieceJustificativeRepository;
         this.demandePieceRepository = demandePieceRepository;
@@ -85,6 +90,7 @@ public class DemandeService {
         this.passeportRepository=passeportRepository;
         this.visaRepository=visaRepository;
         this.carteResidentRepository=carteResidentRepository;
+        this.demandePieceService=demandePieceService;
     }
 
     @Transactional 
@@ -339,5 +345,29 @@ public class DemandeService {
 
         return demande;
     }
-    
+
+
+    @Transactional
+    public Demande scannerDemandePieces(Integer demandeId ,  Map<Integer , MultipartFile> files) throws Exception{
+        LocalDateTime now = LocalDateTime.now();
+        Demande demande = demandeRepository.findById(demandeId).orElseThrow(() -> new IllegalArgumentException("Demandeur introuvable: " + demandeId));
+        List<DemandePiece> piecesSaved = demandePieceRepository.findByDemandeId(demandeId);
+        if(files.size()<piecesSaved.size()) {
+            throw new Exception("Pieces ulpoades insuffisants");
+        }
+        List<DemandePiece> dps= demandePieceService.createDemandePieces(piecesSaved, files);
+
+        DemandeHistory history = new DemandeHistory();
+        history.setDateChangement(now);
+        history.setDemande(demande);
+        history.setMotif("Scan termine");
+
+        DemandeStatus status = demandeStatusRepository.findById(STATUS_SCAN_TEMNINE_ID).orElseThrow(() -> new IllegalArgumentException("Status scan termine introuvable"));
+        history.setStatus(status);
+
+        demandeHistoryRepository.save(history);
+
+        return demande;
+    }
+
 }
