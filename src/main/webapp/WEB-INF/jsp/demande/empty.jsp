@@ -5,9 +5,9 @@
 <layout:page title="Ajouter passeport">
 <h1>Transfert sans donnees anterieures</h1>
     <h3><p class="sub">Demandeur: ${demandeur.nom} ${demandeur.prenom}</p></h3>
+    <form action="${pageContext.request.contextPath}/demandes/empty" method="post">
     <div class="card" style="max-width: 900px;">
         <h1>enregistrer demande </h1>
-            <form action="${pageContext.request.contextPath}/demandes/transfertempty" method="post">
             <input type="hidden" name="demandeurId" value="${demandeur.id}">
 
             <div class="grid">
@@ -37,15 +37,16 @@
                 </div>
 
 
-                <%-- <div class="field">
-                    <label for="refVisa">Ref Visa</label>
-                    <input id="refVisa" name="refVisa" type="text" required>
+                 <div class="field">
+                    <label for="typeDemande">Type de demande</label>
+                    <select id="typeDemande" name="typeDemande" required>
+                        <option value="">Choisir</option>
+                        <c:forEach items="${typeDemandes}" var="typeDemande">
+                            <option value="${typeDemande.id}">${typeDemande.valeur}</option>
+                        </c:forEach>
+                    </select>
                 </div>
-                <div class="field">
-                    <label for="refResident">Ref Resident</label>
-                    <input id="refResident" name="refResident" type="text" required>
-                </div>
-                 --%>
+                
                 <div class="field">
                     <label for="dateObtention">Date Obtention</label>
                     <input id="dateObtention" name="dateObtention" type="date" required>
@@ -61,6 +62,6 @@
                 <button class="btn btn-primary" type="submit">Enregistrer</button>
                 <a class="btn btn-back" href="${pageContext.request.contextPath}/demandeurs/${demandeur.id}">Annuler</a>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </layout:page>

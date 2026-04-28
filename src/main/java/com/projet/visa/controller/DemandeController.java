@@ -171,27 +171,29 @@ public class DemandeController {
         model.addAttribute("demandeTypes", demandeService.findAllDemandeTypes());
     }
 
-    @GetMapping("/transfertempty")
+    @GetMapping("/empty")
     public String transfertEmptyForm(@RequestParam Integer demandeurId, Model model) {
         model.addAttribute("demandeur", demandeurService.findById(demandeurId));
         model.addAttribute("passeports", passeportService.findByDemandeur(demandeurId));
         model.addAttribute("today", LocalDate.now());
         model.addAttribute("visaTypes", demandeService.findAllVisaTypes());
-        return "demande/transfertEmpty";
+        model.addAttribute("typeDemandes", demandeService.findTransfertAndDuplicataTypes());
+        return "demande/empty";
     }
 
-    @GetMapping("/duplicataempty")
-    public String duplicataEmptyForm(@RequestParam Integer demandeurId, Model model) {
-        model.addAttribute("demandeur", demandeurService.findById(demandeurId));
-        model.addAttribute("today", LocalDate.now());
-        model.addAttribute("visaTypes", demandeService.findAllVisaTypes());
-        return "demande/duplicataEmpty";
-    }
+    // @GetMapping("/empty")
+    // public String duplicataEmptyForm(@RequestParam Integer demandeurId, Model model) {
+    //     model.addAttribute("demandeur", demandeurService.findById(demandeurId));
+    //     model.addAttribute("today", LocalDate.now());
+    //     model.addAttribute("visaTypes", demandeService.findAllVisaTypes());
+    //     return "demande/duplicataEmpty";
+    // }
 
-    @PostMapping("/transfertempty")
+    @PostMapping("/empty")
     public String transfertEmpty(
             
             @RequestParam("demandeurId") Integer demandeurId,
+            @RequestParam("typeDemande") Integer typeDemandeId,
             @RequestParam("visaTypeId") Integer visaTypeId,
             @RequestParam("passeportId") Integer passeportId,
 
@@ -216,7 +218,7 @@ public class DemandeController {
             }
             LocalDate dateObtentionParsed = LocalDate.parse(dateObtention); 
             LocalDate dateExpirationParsed = LocalDate.parse(dateExpiration);
-            demandeService.transfertEmpty(demandeurId, dateDemandeParsed, visaTypeId, dateObtentionParsed, dateExpirationParsed);
+            demandeService.transfertEmpty(demandeurId, typeDemandeId, dateDemandeParsed, visaTypeId, dateObtentionParsed, dateExpirationParsed);
             redirectAttributes.addFlashAttribute("success", "Demande Sans donnee anterieur cree avec succes");
             
             return "redirect:/demandes" ;

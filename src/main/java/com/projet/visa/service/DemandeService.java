@@ -224,6 +224,10 @@ public class DemandeService {
         return demandeTypeRepository.findAll();
     }
 
+    public List<DemandeType> findTransfertAndDuplicataTypes() {
+        return demandeTypeRepository.findByIdIn(List.of(transfertTypeId, duplicataTypeId));
+    }
+
     public List<PieceJustificative> findAllPieces() {
         return pieceJustificativeRepository.findAll();
     }
@@ -304,10 +308,10 @@ public class DemandeService {
         return demande;
     }
 
-    public Demande transfertEmpty(Integer demandeurId, LocalDate date, Integer visaTypeId, LocalDate dateObtention, LocalDate dateExpiration) throws Exception {
+    public Demande transfertEmpty(Integer demandeurId, Integer typeDemandeId, LocalDate date, Integer visaTypeId, LocalDate dateObtention, LocalDate dateExpiration) throws Exception {
         Demandeur demandeur = demandeurRepository.findById(demandeurId).orElseThrow(() -> new IllegalArgumentException("Demandeur introuvable: " + demandeurId));
         VisaType visaType = visaTypeRepository.findById(visaTypeId).orElseThrow(() -> new IllegalArgumentException("Type visa introuvable: " + visaTypeId));
-        DemandeType demandeType = demandeTypeRepository.findById(transfertTypeId).orElseThrow(() -> new IllegalArgumentException("Type demande introuvable: " + transfertTypeId));
+        DemandeType demandeType = demandeTypeRepository.findById(typeDemandeId).orElseThrow(() -> new IllegalArgumentException("Type demande introuvable: " + typeDemandeId));
         DemandeStatus status = demandeStatusRepository.findById(STATUS_CREATE_ID).orElseThrow(()-> new IllegalArgumentException("Status introuvable " +STATUS_CREATE_ID));
         
         LocalDateTime now  = LocalDateTime.now();

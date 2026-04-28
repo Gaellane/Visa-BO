@@ -14,6 +14,7 @@ import com.projet.visa.repository.GenreRepository;
 import com.projet.visa.repository.NationaliteRepository;
 import com.projet.visa.repository.StatusMaritalRepository;
 import com.projet.visa.repository.VisaTransformableRepository;
+import com.projet.visa.repository.VisaRepository;
 import com.projet.visa.repository.PasseportRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class DemandeurService {
     private final NationaliteRepository nationaliteRepository;
     private final VisaTransformableRepository visaTransformableRepository;
     private final PasseportRepository passeportRepository;
-
+    private final VisaRepository visaRepository;
 
     public Demandeur create(
         String nom,
@@ -144,7 +145,7 @@ public class DemandeurService {
     }
     public Boolean canCreateEmpty(Integer demandeurId ) {
         LocalDate today = LocalDate.now();
-        return visaTransformableRepository.findByDemandeurAndDateBetween(demandeurId,today).size()==0
+        return visaRepository.findByDemandeurAndDateBetween(demandeurId,today).size()==0
             && passeportRepository.findByDemandeurIdAndDateBetween(demandeurId,today).size()>0;
     }
     
