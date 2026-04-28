@@ -125,8 +125,6 @@
         <div class="actions">
             <a class="btn btn-secondary" href="${pageContext.request.contextPath}/demandeurs/${demandeur.id}/edit">Modifier demandeur</a>
             <a class="btn btn-primary" href="${pageContext.request.contextPath}/passeports/new?demandeurId=${demandeur.id}">Ajouter passeport</a>
-            <a class="btn btn-secondary" href="${pageContext.request.contextPath}/demandes/transfert?demandeurId=${demandeur.id}">Transfert</a>
-            
             <c:if test="${canDemande}">
                 <a class="btn btn-secondary" href="${pageContext.request.contextPath}/demandes/new?demandeurId=${demandeur.id}">Ajouter demande</a>
             </c:if>
