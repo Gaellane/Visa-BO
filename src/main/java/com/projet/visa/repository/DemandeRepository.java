@@ -21,4 +21,7 @@ public interface DemandeRepository extends JpaRepository<Demande, Integer> {
     @Param("visaTypeId") Integer visaTypeId);
 
     Optional<Demande> findByNumero(String numero);
+
+    @Query("SELECT d FROM Demande d WHERE d.demandeur.id=?1 ORDER BY d.dateDemande ASC")
+    List<Demande> findByDemandeurIdAndDateAsc(Integer demandeurId);
 }

@@ -31,5 +31,4 @@ public class DemandeListDto {
 
     private DemandeStatus status;
 
-
 }
