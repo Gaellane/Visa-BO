@@ -10,7 +10,7 @@
             <div class="grid">
                 <div class="field">
                     <label for="dateMin">Date min</label>
-                    <input id="dateMin" type="date" n  ame="dateMin" value="${dateMin}" />
+                    <input id="dateMin" type="date" name="dateMin" value="${dateMin}" />
                 </div>
 
                 <div class="field">
