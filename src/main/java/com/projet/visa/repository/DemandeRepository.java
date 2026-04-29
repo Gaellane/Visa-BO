@@ -19,4 +19,6 @@ public interface DemandeRepository extends JpaRepository<Demande, Integer> {
     @Param("dateMax") LocalDate dateMax,
     @Param("typeId") Integer typeId,
     @Param("visaTypeId") Integer visaTypeId);
+
+    Optional<Demande> findByNumero(String numero);
 }

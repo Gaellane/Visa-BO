@@ -21,6 +21,8 @@ public class DemandeListDto {
 
     private LocalDate dateDemande;
 
+    private String numero;
+
     private Demandeur demandeur;
 
     private DemandeType type;

@@ -115,11 +115,12 @@ public class DemandeService {
 
         VisaType visaType = visaTypeRepository.findById(visaTypeId).orElseThrow(() -> new IllegalArgumentException("Type visa introuvable: " + visaTypeId));
         DemandeType demandeType = demandeTypeRepository.findById(demandeTypeId).orElseThrow(() -> new IllegalArgumentException("Type demande introuvable: " + demandeTypeId));
-
+        String demandeNumero ="DM-"+ReferenceGenerator.generateReference();
         Demande demande = new Demande();
         if(date==null) {
             date=now.toLocalDate();
         }
+        demande.setNumero(demandeNumero);
         demande.setDateDemande(date);
         demande.setDemandeur(demandeur);
         demande.setType(demandeType);
@@ -252,6 +253,7 @@ public class DemandeService {
         List<DemandeListDto> dtos = demandes.stream().map(demande -> new DemandeListDto(
             demande.getId(),
             demande.getDateDemande(),
+            demande.getNumero(),
             demande.getDemandeur(),
             demande.getType(),
             demande.getTypeVisa(),
@@ -271,6 +273,7 @@ public class DemandeService {
         return new DemandeListDto(
             demande.getId(),
             demande.getDateDemande(),
+            demande.getNumero(),
             demande.getDemandeur(),
             demande.getType(),
             demande.getTypeVisa(),
@@ -284,6 +287,7 @@ public class DemandeService {
         
         Demande demande = new Demande();
         demande.setDateDemande(date);
+        demande.setNumero("DM-"+ReferenceGenerator.generateReference());
         demande.setDemandeur(demandeur);
         demande.setType(demandeType);
         demande.setTypeVisa(visaType);
@@ -330,6 +334,7 @@ public class DemandeService {
 
         Demande demande = new Demande();
         demande.setDateDemande(date);
+        demande.setNumero("DM-"+ReferenceGenerator.generateReference());
         demande.setDemandeur(demandeur);
         demande.setType(demandeType);
         demande.setTypeVisa(visaType);
@@ -370,5 +375,6 @@ public class DemandeService {
 
         return demande;
     }
+
 
 }
