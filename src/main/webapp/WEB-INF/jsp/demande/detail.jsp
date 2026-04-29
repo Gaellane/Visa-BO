@@ -4,7 +4,7 @@
 
 <layout:page title="Fiche demande">
     <div class="card" style="max-width: 900px;">
-        <h1>Fiche demande</h1>
+        <h1>Fiche demande - ${demande.numero}</h1>
 
         <div class="info-grid">
             <div class="info-item">

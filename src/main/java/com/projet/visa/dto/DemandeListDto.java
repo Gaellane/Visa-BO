@@ -21,6 +21,8 @@ public class DemandeListDto {
 
     private LocalDate dateDemande;
 
+    private String numero;
+
     private Demandeur demandeur;
 
     private DemandeType type;
@@ -28,6 +30,5 @@ public class DemandeListDto {
     private VisaType typeVisa;
 
     private DemandeStatus status;
-
 
 }

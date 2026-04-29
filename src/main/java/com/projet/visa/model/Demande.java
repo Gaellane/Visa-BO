@@ -41,6 +41,9 @@ public class Demande {
     @JoinColumn(name = "id_type_visa")
     private VisaType typeVisa;
 
+    @Column(name = "numero" , nullable = false)
+    private String numero;
+
     public Demande orElseThrow(Object object) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
