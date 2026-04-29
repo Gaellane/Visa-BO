@@ -15,4 +15,6 @@ public interface PasseportRepository extends JpaRepository<Passeport, Integer> {
 
 	@Query("SELECT p FROM Passeport p WHERE p.demandeur.id = ?1 AND ?2 BETWEEN p.delivrance AND p.expiration")
 	List<Passeport> findByDemandeurIdAndDateBetween(Integer demandeurId, LocalDate date);
+
+	Passeport findByNumero(String numero);
 }

@@ -21,6 +21,7 @@ import com.projet.visa.model.DemandePiece;
 import com.projet.visa.model.DemandeStatus;
 import com.projet.visa.model.DemandeType;
 import com.projet.visa.model.Demandeur;
+import com.projet.visa.model.Passeport;
 import com.projet.visa.model.PieceJustificative;
 import com.projet.visa.model.Visa;
 import com.projet.visa.model.VisaType;
@@ -37,6 +38,7 @@ import com.projet.visa.repository.VisaTypeRepository;
 import com.projet.visa.repository.VisaRepository;
 import com.projet.visa.repository.CarteResidentRepository;
 import com.projet.visa.dto.DemandeListDto;
+import com.projet.visa.dto.DemandeWithStatusDto;
 
 
 @Service    
@@ -115,11 +117,12 @@ public class DemandeService {
 
         VisaType visaType = visaTypeRepository.findById(visaTypeId).orElseThrow(() -> new IllegalArgumentException("Type visa introuvable: " + visaTypeId));
         DemandeType demandeType = demandeTypeRepository.findById(demandeTypeId).orElseThrow(() -> new IllegalArgumentException("Type demande introuvable: " + demandeTypeId));
-
+        String demandeNumero ="DM-"+ReferenceGenerator.generateReference();
         Demande demande = new Demande();
         if(date==null) {
             date=now.toLocalDate();
         }
+        demande.setNumero(demandeNumero);
         demande.setDateDemande(date);
         demande.setDemandeur(demandeur);
         demande.setType(demandeType);
@@ -252,6 +255,7 @@ public class DemandeService {
         List<DemandeListDto> dtos = demandes.stream().map(demande -> new DemandeListDto(
             demande.getId(),
             demande.getDateDemande(),
+            demande.getNumero(),
             demande.getDemandeur(),
             demande.getType(),
             demande.getTypeVisa(),
@@ -271,6 +275,7 @@ public class DemandeService {
         return new DemandeListDto(
             demande.getId(),
             demande.getDateDemande(),
+            demande.getNumero(),
             demande.getDemandeur(),
             demande.getType(),
             demande.getTypeVisa(),
@@ -284,6 +289,7 @@ public class DemandeService {
         
         Demande demande = new Demande();
         demande.setDateDemande(date);
+        demande.setNumero("DM-"+ReferenceGenerator.generateReference());
         demande.setDemandeur(demandeur);
         demande.setType(demandeType);
         demande.setTypeVisa(visaType);
@@ -330,6 +336,7 @@ public class DemandeService {
 
         Demande demande = new Demande();
         demande.setDateDemande(date);
+        demande.setNumero("DM-"+ReferenceGenerator.generateReference());
         demande.setDemandeur(demandeur);
         demande.setType(demandeType);
         demande.setTypeVisa(visaType);
@@ -371,4 +378,53 @@ public class DemandeService {
         return demande;
     }
 
+
+    public List<DemandeListDto> getByPasseportOrDemandeNumero(String numero) throws Exception{
+        Demande d = demandeRepository.findByNumero(numero).orElse(null);
+        Demandeur demandeur = null;
+        boolean isDemandeNum=false;
+        if(d==null) {
+            Passeport p = passeportRepository.findByNumero(numero);
+            if(p==null) {
+                throw new Exception("Aucun(e) passeport / demande caurespondant au numero "+numero);
+            }
+            demandeur = p.getDemandeur();
+        } else {
+            isDemandeNum=true;
+            demandeur = d.getDemandeur();
+        }
+
+
+
+        List<Demande> demandes = demandeRepository.findByDemandeurIdAndDateAsc(demandeur.getId());
+        if(isDemandeNum) {
+            demandes.remove(d);
+            demandes.add(0,d);
+        }
+
+        List<DemandeListDto> retour = new ArrayList<>();    
+        for(Demande demande : demandes) {
+            DemandeListDto dto = getDtoById(demande.getId());
+            retour.add(dto);
+        }
+        return retour;
+
+    }
+
+    public DemandeWithStatusDto getDtoWithHistoryById(Integer id) {
+        Demande demande = getById(id);
+        DemandeStatus status = demandeHistoryRepository.findByDemandeIdOrderByDateDesc(demande.getId()).stream().findFirst().map(DemandeHistory::getStatus).orElse(null);
+        List<DemandeHistory> histories = demandeHistoryRepository.findByDemandeIdOrderByDateDesc(demande.getId());
+        DemandeListDto dto= new DemandeListDto(
+            demande.getId(),
+            demande.getDateDemande(),
+            demande.getNumero(),
+            demande.getDemandeur(),
+            demande.getType(),
+            demande.getTypeVisa(),
+            status
+        );
+
+        return new DemandeWithStatusDto(dto,histories);
+    }
 }
