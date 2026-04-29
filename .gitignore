@@ -45,3 +45,4 @@ build/
 
 ### Upload files ###
 uploads/
+src/main/resources/application.properties
