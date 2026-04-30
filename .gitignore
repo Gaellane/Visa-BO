@@ -46,3 +46,5 @@ build/
 ### Upload files ###
 uploads/
 src/main/resources/application.properties
+
+visa-react/node-modules
