@@ -44,8 +44,7 @@ public class Demande {
     @Column(name = "numero" , nullable = false)
     private String numero;
 
-    public Demande orElseThrow(Object object) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
-    }
+    @Column(name = "chemin_code")
+    private String cheminCode;
+
 }
