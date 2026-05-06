@@ -13,4 +13,4 @@ spring.mvc.view.prefix=/WEB-INF/jsp/
 spring.mvc.view.suffix=.jsp
 
 upload.dir=uploads
-frontend.url=http://192.168.1.106:5173
+frontend.url=http://localhost:5173
