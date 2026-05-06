@@ -9,10 +9,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.projet.visa.util.QRCodeGenerator;
 import com.projet.visa.util.ReferenceGenerator;
 import com.projet.visa.model.CarteResident;
 import com.projet.visa.model.Demande;
@@ -66,6 +68,12 @@ public class DemandeService {
     private Integer newDemandeTypeId=1;
     private Integer transfertTypeId=3;
     private Integer duplicataTypeId=2;
+
+    @Value("${upload.dir}")
+    private String UPLOAD_DIR = "/uploads";
+
+    @Value("${frontend.url}")
+    private String FRONTEND_URL = "http://localhost:5173";
 
     public DemandeService(
             DemandeRepository demandeRepository,
@@ -142,6 +150,11 @@ public class DemandeService {
         history.setStatus(status);
         history.setDemande(demande);
         demandeHistoryRepository.save(history);
+
+        String code_path="src/main/resources/static/"+UPLOAD_DIR+"/codes/"+demande.getNumero()+".PNG";
+        
+        QRCodeGenerator.generateQRCode(FRONTEND_URL+"/demandes/"+demande.getId(),code_path);
+        demande.setCheminCode(code_path);
 
         return demande;
     

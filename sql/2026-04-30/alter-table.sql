@@ -1,0 +1,1 @@
+ALTER TABLE demande ADD COLUMN chemin_code VARCHAR(255) NULL;

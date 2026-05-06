@@ -7,6 +7,7 @@
         <h1>Fiche demande - ${demande.numero}</h1>
 
         <div class="info-grid">
+            
             <div class="info-item">
                 <div class="label">Demandeur</div>
                 <div class="value">
@@ -78,6 +79,22 @@
                     </c:choose>
                 </div>
             </div>
+        </div>
+
+        <div style="margin-top: 24px; padding: 16px; border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; text-align: center;">
+            <div class="label" style="margin-bottom: 12px;">Code QR de la demande</div>
+            <c:choose>
+                <c:when test="${not empty demande.numero}">
+                    <img
+                        src="${pageContext.request.contextPath}/uploads/codes/${demande.numero}.PNG"
+                        alt="Code QR de la demande ${demande.numero}"
+                        style="max-width: 240px; width: 100%; height: auto; display: inline-block;"
+                    />
+                </c:when>
+                <c:otherwise>
+                    <p style="margin: 0; color: #6b7280;">Impossible d'afficher le code QR pour cette demande.</p>
+                </c:otherwise>
+            </c:choose>
         </div>
 
         <h2 style="margin-top: 24px;">Pieces justificatives</h2>
